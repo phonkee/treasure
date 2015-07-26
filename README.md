@@ -1,6 +1,8 @@
 Treasure ORM
 ============
 
+**!!!! Treasure ORM is in phase of experimenting !!!**
+
 ORM library for rust (or rather proof of concept, with following heavy development).
 
 This is still experiment, and I started probably from the other side of ORM that should be started by its development, 
@@ -48,6 +50,13 @@ I am still doing design decisions for now.
 
 
 Treasure will generate impl methods such as options() which returns informations about inspected Model.
+
+you can try to run provided example:
+    cargo run --example foo --verbose
+    
+currently for debugging purposes I also print implementation that Treasure generates.
+    
+
 
 Design
 ------
