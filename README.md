@@ -32,20 +32,20 @@ struct User {
     #[column(db_name="ID",primary_key)]
     pub id: i32,
 
-    #[column(unique)]
-    pub username: String,
+	#[column(unique)]
+	pub username: String,
 
     #[column]
     pub password: Option<String>,
 
-    #[column]
-    pub email: String,
+	#[column]
+	pub email: String,
 
-    #[column]
-    pub some: String,
+	#[column]
+	pub some: String,
 
-    #[column(db_name="custom_other")]
-    pub other: String,
+	#[column(db_name="custom_other")]
+	pub other: String,
 }
 ```
 
@@ -129,6 +129,7 @@ Dialects: postgres...
 maybe something like this? (some ideas):
 
 ```rust
+<<<<<<< HEAD
 let users = query::select!(User, query::and(id__gt=13, id__lte=100), active=true).collect()
 
 session::query!(query::select!(User, where(query::and(id__gt=13, id__lte=100), active=true))
@@ -145,6 +146,24 @@ query::delete!(user)
 TODO: how to do pluggable modifiers such as "__gt", "__gte" etc...
 Ideally every modifier should be passed to Column trait method that will return 
 how to do query.
+=======
+let session = Session::new(conn)
+session.begin()
+
+session.select(User()).where("id__lt").collect()
+let user = User::init_new()
+session.insert(user)
+session.commit()
+```
+
+Or this?
+
+```rust
+let users = query::select!(User, query::and(id__gt=13, id__lte=100), active=true).collect()
+```
+
+Q: how to do pluggable modifiers such as "__gt", "__gte" etc...
+>>>>>>> d68a6d4918c586172fe13a71f61ba681051d2582
 
 
 Signals
@@ -158,7 +177,7 @@ struct User {
 
 }
 ```
-    
+
 This will generate more code ... I am looking forward to all of this.
     
     
