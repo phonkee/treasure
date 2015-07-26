@@ -26,8 +26,6 @@ pub fn expand_model(excx: &mut ExtCtxt,
 			let mo_impl = r.get_impl(item);
 			let _a = Annotatable::Item(excx.parse_item(mo_impl));
 			push(_a);
-
-			// @TODO: additional generated implementations.
 		},
 	}
 

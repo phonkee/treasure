@@ -119,6 +119,7 @@ impl <'a> ModelOptions <'a> {
 	}
 
 	// Returns iplementation source
+	// @TODO: return list of items so we can process them multiple
 	pub fn get_impl(&self, ann:&base::Annotatable) -> String {
 
 		let mut cinfos:Vec<String> = vec![];

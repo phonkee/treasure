@@ -78,11 +78,9 @@ pub fn init_column<T:Column>(_ci:&options::Options) -> T {
 
 /*
 These two implementations doesnt work:
-If Itry
+If I try
 		Column::set_defaults<i32>(&mut ci);
-
-
- */
+*/
 
 // generic set_attr method
 pub fn set_attr<T:Column>(name:&str, attr:&attrs::Attr, ci:&mut options::Options) -> Option<attrs::AttrError> {
