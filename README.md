@@ -138,7 +138,7 @@ maybe something like this?:
 
     or this?
     
-    let users = query!(User, and(id__gt=13, id__lte=100), active=true).collect()
+    let users = query::select!(User, query::and(id__gt=13, id__lte=100), active=true).collect()
     
     Q: how to do pluggable modifiers such as "__gt", "__gte" etc...
 
