@@ -3,7 +3,7 @@ use syntax::ext::quote::rt::{ExtParseUtils};
 use syntax::ast::{MetaItem,MetaList};
 use syntax::codemap::{Span};
 
-trace_macros!(true);
+//trace_macros!(true);
 
 use super::options::ModelOptions;
 
