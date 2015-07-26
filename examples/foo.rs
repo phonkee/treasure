@@ -11,7 +11,7 @@ use treasure::models::model::Model;
 #[model(db_name="custom_user",primary_key="id",unique(email,test),unique(some,other))]
 struct User {
 
-	#[field(db_name="ID",primary_key)]
+	#[field(db_name="ID",primary_key,other(other(other)))]
 	pub id: i32,
 
 	#[field(db_name="username",unique)]

@@ -7,6 +7,9 @@ use syntax::codemap::{Span};
 
 use super::options::ModelOptions;
 
+use super::super::utils::attrs;
+
+
 #[allow(unused_variables)]
 pub fn expand_model(excx: &mut ExtCtxt,
 					sp: Span,
@@ -20,19 +23,18 @@ pub fn expand_model(excx: &mut ExtCtxt,
 	match result {
 		Err(e) => excx.span_err(sp, format!(r#"Error {:?}"#, e).as_str()),
 		Ok(r) => {
-			let mo_impl = r.get_impl();
+			let mo_impl = r.get_impl(item);
 			let _a = Annotatable::Item(excx.parse_item(mo_impl));
-			push(_a)
+			push(_a);
 
 			// @TODO: additional generated implementations.
 		},
 	}
 
 	excx.span_note(sp, "Please don't forged Treasure is for now proof of concept, which will hopefully end as succesfull ORM!
-There are still unanswered questions, and I hope I will found right answers.
-However any help with design and/or programming is really appreciated, since write ORM is not easy task.
-
-Right now it's very rough still nice concept, which we can make together to green badge on arewewebyet.com
+Design decisions are still to be done, but mapper (inspection) will be soon done.
+Any help with design and/or implementation is really appreciated, since write ORM is not easy task.
+Right now it's very rough, still nice concept, which we can make together to green badge on arewewebyet.com in category ORM.
 
 Thank you,
 	(phonkee)
