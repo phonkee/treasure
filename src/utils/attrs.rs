@@ -36,18 +36,20 @@ impl fmt::Display for Attr {
 
 // Errors that can occur at reading from meta attributes and applying for callback closure.
 pub enum AttrError {
-	UnknownAttr(String),
+	UnknownAttr,
 	UnusedAttr,
 }
 
 // implement Display trait to nice error messages
 impl fmt::Display for AttrError {
+
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self {
-			UnknownAttr => write!(f, "unknown attribute"),
-			UnusedAttr => write!(f, "unused attribute"),
+			&AttrError::UnknownAttr => write!(f, "unknown attribute"),
+			&AttrError::UnusedAttr => write!(f, "unused attribute"),
 		}
     }
+
 }
 
 /*
