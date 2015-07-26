@@ -1,0 +1,9 @@
+[package]
+name = "treasure"
+version = "0.0.1"
+authors = ["Peter Vrba <phonkee@phonkee.eu>"]
+
+[lib]
+name = "treasure"
+plugin = true
+path = "src/lib.rs"
