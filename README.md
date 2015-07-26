@@ -126,19 +126,21 @@ Under design decisions!!
 
 Dialects: postgres...
 
-I think we should go the way as sqlalchemy goes, so no ActiveRecord style (sorry django).
-
 maybe something like this?:
 
     let session = Session::new(conn)
     session.begin()
     
     session.select(User()).where("id__lt").collect()
-    
     let user = User::init_new()
     session.insert(user)
-
     session.commit()
+
+    or this?
+    
+    let users = query!(User, and(id__gt=13, id__lte=100), active=true).collect()
+    
+    Q: how to do pluggable modifiers such as "__gt", "__gte" etc...
 
 
 Signals
