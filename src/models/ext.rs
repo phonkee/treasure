@@ -29,7 +29,7 @@ pub fn expand_model(excx: &mut ExtCtxt,
 		},
 	}
 
-	excx.span_note(sp, "Please don't forged Treasure is for now proof of concept, which will hopefully end as succesfull ORM!
+	excx.span_note(sp, "Please don't forget Treasure is for now proof of concept, which will hopefully end as succesfull ORM!
 Design decisions are still to be done, but mapper (inspection) will be soon done.
 Any help with design and/or implementation is really appreciated, since write ORM is not easy task.
 Right now it's very rough, still nice concept, which we can make together to green badge on arewewebyet.com in category ORM.

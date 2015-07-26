@@ -129,10 +129,9 @@ Dialects: postgres...
 maybe something like this? (some ideas):
 
 ```rust
-<<<<<<< HEAD
-let users = query::select!(User, query::and(id__gt=13, id__lte=100), active=true).collect()
+let users = query::select!(User, query::and!(id__gt=13, id__lte=100), active=true).collect()
 
-session::query!(query::select!(User, where(query::and(id__gt=13, id__lte=100), active=true))
+session::query!(query::select!(User, where!(query::and(id__gt=13, id__lte=100), active=true))
 
 let user = User::init_new();
 query::insert!(conn, user)
@@ -145,26 +144,22 @@ query::delete!(user)
 
 TODO: how to do pluggable modifiers such as "__gt", "__gte" etc...
 Ideally every modifier should be passed to Column trait method that will return 
-how to do query.
-=======
-let session = Session::new(conn)
-session.begin()
 
-session.select(User()).where("id__lt").collect()
-let user = User::init_new()
-session.insert(user)
-session.commit()
-```
-
-Or this?
+*Macro syntactic sugar*
+There is also possibility, since rust macro system is so powerful, not use postfixes, but directly write this:
 
 ```rust
-let users = query::select!(User, query::and(id__gt=13, id__lte=100), active=true).collect()
+let users = query::select!(User, query::or!(query::and!(id <= 13, id >= 2), active=true)).collect()
 ```
 
-Q: how to do pluggable modifiers such as "__gt", "__gte" etc...
->>>>>>> d68a6d4918c586172fe13a71f61ba681051d2582
+or with variables:
 
+```rust
+let min = 1;
+let max = 100;
+
+let users = query::select!(User, query::or!(query::and!(id <= max, id >= min), active=true)).collect()
+```
 
 Signals
 -------
