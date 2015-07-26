@@ -39,6 +39,3 @@ Thank you,
 	");
 }
 
-#[test]
-fn it_works() {
-}

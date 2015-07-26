@@ -18,3 +18,9 @@ pub fn camel_to_snake(input:&str) -> String {
 
 	return result;
 }
+
+#[test]
+fn test_valid_camel_to_snake() {
+	assert_eq!(camel_to_snake("HelloWorld"), "hello_world".to_string());
+	assert_eq!(camel_to_snake("HWorld"), "h_world".to_string());
+}
