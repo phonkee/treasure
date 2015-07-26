@@ -1,5 +1,7 @@
+/*
+Various string helpler methods
+ */
 use std::ascii::AsciiExt;
-use std::borrow::Cow;
 
 /// Converts CamelCase to snake_case
 pub fn camel_to_snake(input:&str) -> String {

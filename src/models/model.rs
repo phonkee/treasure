@@ -1,3 +1,6 @@
+/*
+Modal trait that all models should satisfy. For now all methods for Model trait are generated.
+ */
 use super::options::ModelOptions;
 use super::columns::options;
 
