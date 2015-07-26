@@ -18,36 +18,36 @@ I know you say "that's not idiomatic rust", but it helps to avoid a lot of thing
 Let me show my idea how should model definition look like. I will omit for now ForeignKey, ManyToMany, OneToOne which
 I am still doing design decisions for now.
 
+```rust
+#![feature(custom_attribute,plugin)]
+#![plugin(treasure)]
 
-    #![feature(custom_attribute,plugin)]
-    #![plugin(treasure)]
-    
-    extern crate treasure;
-    
-    use treasure::models::model::Model;
-    
-    #[model(db_name="custom_user",primary_key="id",unique(email,test),unique(some,other),index(some,other)]
-    struct User {
-    
-        #[column(db_name="ID",primary_key)]
-        pub id: i32,
-    
-    	#[column(unique)]
-    	pub username: String,
-    
-        #[column]
-        pub password: Option<String>,
-    
-    	#[column]
-    	pub email: String,
-    
-    	#[column]
-    	pub some: String,
-    
-    	#[column(db_name="custom_other")]
-    	pub other: String,
-    }
+extern crate treasure;
 
+use treasure::models::model::Model;
+
+#[model(db_name="custom_user",primary_key="id",unique(email,test),unique(some,other),index(some,other)]
+struct User {
+
+    #[column(db_name="ID",primary_key)]
+    pub id: i32,
+
+	#[column(unique)]
+	pub username: String,
+
+    #[column]
+    pub password: Option<String>,
+
+	#[column]
+	pub email: String,
+
+	#[column]
+	pub some: String,
+
+	#[column(db_name="custom_other")]
+	pub other: String,
+}
+```
 
 Treasure will generate impl methods such as options() which returns informations about inspected Model.
 
@@ -128,31 +128,36 @@ Dialects: postgres...
 
 maybe something like this?:
 
-    let session = Session::new(conn)
-    session.begin()
-    
-    session.select(User()).where("id__lt").collect()
-    let user = User::init_new()
-    session.insert(user)
-    session.commit()
+```rust
+let session = Session::new(conn)
+session.begin()
 
-    or this?
-    
-    let users = query::select!(User, query::and(id__gt=13, id__lte=100), active=true).collect()
-    
-    Q: how to do pluggable modifiers such as "__gt", "__gte" etc...
+session.select(User()).where("id__lt").collect()
+let user = User::init_new()
+session.insert(user)
+session.commit()
+```
+
+Or this?
+
+```rust
+let users = query::select!(User, query::and(id__gt=13, id__lte=100), active=true).collect()
+```
+
+Q: how to do pluggable modifiers such as "__gt", "__gte" etc...
 
 
 Signals
 -------
 
 add support for signals that will be probably in annotation, e.g.:
+```rust
+#[model(pre_insert="pre_insert")]
+struct User {
 
-    #[model(pre_insert="pre_insert")]
-    struct User {
-    
-    }
-    
+}
+```
+
 This will generate more code ... I am looking forward to all of this.
     
     
