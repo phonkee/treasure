@@ -32,8 +32,18 @@ impl fmt::Display for Attr {
 }
 
 pub enum AttrError {
-	UnknownAttr,
+	UnknownAttr(String),
 	UnusedAttr,
+}
+
+// implement Display trait to nice error messages
+impl fmt::Display for AttrError {
+	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+		match self {
+			UnknownAttr => write!(f, "unknown attribute"),
+			UnusedAttr => write!(f, "unused attribute"),
+		}
+    }
 }
 
 /*
@@ -44,18 +54,24 @@ pub struct Attrs(collections::HashMap<String, Attr>);
 
 impl Attrs {
 
+	// Create new instance of Attrs
 	pub fn new() -> Attrs {
 		Attrs(collections::HashMap::new())
 	}
 
+	// insert new attribute
 	pub fn insert(&mut self, name: &String, attr:Attr) -> &Self {
 		self.0.insert((*name).clone(), attr);
 		self
 	}
 
+	// read meta item and populate attributes
+	// closure is callback function that can correct these attributes to valid values, or
+	// refuse attribute at all.
 	pub fn read_meta_item<F>(&mut self, _mi:&ast::MetaItem, _closure: F) -> Result<Attrs, AttrError>
 		where F: Fn(String, Result<Attr, AttrError>) -> Result<Attr, AttrError>
 	{
+
 		Err(AttrError::UnknownAttr)
 	}
 

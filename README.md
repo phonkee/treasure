@@ -49,13 +49,31 @@ struct User {
 }
 ```
 
-Treasure will generate impl methods such as options() which returns informations about inspected Model.
+Treasure will generate Model trait impl methods such as:
+```rust
+fn model_options(&self) -> ModelOptions;
+```
+which returns inspect information about model
 
-you can try to run provided example:
+```rust
+fn column_options(column:String) -> Option<options::Options>;
+```
+this method returns options::Options about given field
+TODO: isn't it possible to store these data in static variable, so it will not be recreated before each call
+to column_options?
+
+```rust
+fn init_new() -> Self;
+```
+which is constructor method to create new model instance.
+
+
+Right now you can try and see what currently Treasure orm does by runnin:
+```bash
     cargo run --example foo --verbose
-    
-currently for debugging purposes I also print implementation that Treasure generates.
-    
+```
+
+For debugging/implementation purposes Treasure dumps generated implementations to stdout.
 
 
 Design
@@ -64,7 +82,7 @@ Design
 Every struct that will be persistable should implement trait Model (call that struct model).
 This struct must be annotated with "model" attribute that tells Treasure to inspect this model and generate
 needed Model trait method. 
-Every field in model that is annotated with "field" attribute will be accepted as database column. All other not
+Every field in model that is annotated with "column" attribute will be accepted as database column. All other not
 annotated will be in options list but marked as "unused".
 
 Model attrs
@@ -72,9 +90,9 @@ Model attrs
 
 For now model has following possible annotations
 * db_name - name of the database table, if not given snake case of struct name will be used
-* primary_key - name of the field that is primary_key, if incorrect compiler must raise sane error.
+* primary_key - name of the column that is primary_key, if incorrect compiler must raise sane error.
     primary key can be also set as column attribute "primary_key"
-* unique - list of fields that are unique. Multiple occurences can happen. This will not be used much, but will be used
+* unique - list of columns that are unique. Multiple occurences can happen. This will not be used much, but will be used
     in database migrations (which we will support in the future)
 * index - list of fields that should belong to index. Multiple occurences can happen also. (For migrations)
 * managed - whether Treasure should handle creation of model in db (in future)
@@ -92,6 +110,7 @@ For column there are following possigle annotations:
 * primary_key - information that column is primary_key
 * unique - treat column as unique (will be used in db migrations)
 * index - attach to column index (in db migration)
+* not_persist - do not persist this field to database
 
 These are implemented and added to ColumnInfo which holds all informations about column.
 You can see that we have trait Column which all POD types must implement. Also future Option<T> (which stands for nullable column),
@@ -113,8 +132,8 @@ Code generation
 ---------------
 
 Treasure is doing quite a lot of code generation to be easily usable without code repetition. Also for future query language
-we will need inspected information about model and its fields. That's why Treasure generates option() method for every model,
-that gives all these information.
+we will need inspected information about model and its fields. That's why Treasure generates supporting methods for every model,
+that gives all model information.
 Treasure also generates init_new function for every model where it calls Column::init with ColumnOptions parameter so it
 can return appropriate value (default?)
 
@@ -126,7 +145,7 @@ Under design decisions!!
 
 Dialects: postgres...
 
-maybe something like this? (some ideas):
+maybe something like this? (any ideas?):
 
 ```rust
 let users = query::select!(User, query::and!(id__gt=13, id__lte=100), active=true).collect()
@@ -145,7 +164,8 @@ query::delete!(user)
 TODO: how to do pluggable modifiers such as "__gt", "__gte" etc...
 Ideally every modifier should be passed to Column trait method that will return 
 
-*Macro syntactic sugar*
+==Macro syntactic sugar==
+
 There is also possibility, since rust macro system is so powerful, not use postfixes, but directly write this:
 
 ```rust
@@ -169,12 +189,26 @@ add support for signals that will be probably in annotation, e.g.:
 ```rust
 #[model(pre_insert="pre_insert")]
 struct User {
-
 }
 ```
 
-This will generate more code ... I am looking forward to all of this.
-    
+Signals to support:
+* post_load - after object has been load from db
+* pre_insert - before insert to db
+* post_insert - after insert to db
+* pre_update - before update of model instance to db
+* post_update - after update to database
+
+This will generate more code ....
+
+
+Database connection
+-------------------
+
+Design decision needed!
+Where to store database connection? 
+Store in static object in treasure, or add this to every query::.... operation as parameter?
+
     
 Author: 
 -------
