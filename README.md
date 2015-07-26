@@ -32,19 +32,19 @@ I am still doing design decisions for now.
         #[column(db_name="ID",primary_key)]
         pub id: i32,
     
-    	#[column(db_name="username",unique)]
+    	#[column(unique)]
     	pub username: String,
     
-        #[column(db_name="password")]
+        #[column]
         pub password: Option<String>,
     
-    	#[column(db_name="email")]
+    	#[column]
     	pub email: String,
     
-    	#[column(db_name="some")]
+    	#[column]
     	pub some: String,
     
-    	#[column(db_name="other")]
+    	#[column(db_name="custom_other")]
     	pub other: String,
     }
 
