@@ -4,7 +4,7 @@ Various string helpler methods
 use std::ascii::AsciiExt;
 
 /// Converts CamelCase to snake_case
-pub fn camel_to_snake(input:&str) -> String {
+pub fn camel_to_snake(input:String) -> String {
 	let mut result = String::new();
 
 	for (i, c) in input.chars().enumerate() {

@@ -3,9 +3,8 @@ use syntax::ext::quote::rt::{ExtParseUtils};
 use syntax::ast::{MetaItem,MetaList};
 use syntax::codemap::{Span};
 
-//trace_macros!(true);
 
-use super::options::ModelOptions;
+use super::options;
 
 use super::super::utils::attrs;
 
@@ -18,14 +17,14 @@ pub fn expand_model(excx: &mut ExtCtxt,
 					push: &mut FnMut(Annotatable)) {
 
 	// get model options
-	let result = ModelOptions::from_annotatable(item);
-
-	match result {
+	match options::generate_model_options_impls(item){
 		Err(e) => excx.span_err(sp, format!(r#"Error {:?}"#, e).as_str()),
-		Ok(r) => {
-			let mo_impl = r.get_impl(item);
-			let _a = Annotatable::Item(excx.parse_item(mo_impl));
-			push(_a);
+		Ok(impls) => {
+			for mo_impl in impls.iter() {
+				println!("impl {}", mo_impl);
+				let _a = Annotatable::Item(excx.parse_item(mo_impl.clone()));
+				push(_a);
+			}
 		},
 	}
 

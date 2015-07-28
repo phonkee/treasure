@@ -9,7 +9,7 @@ use syntax::ast;
 
 // Attr is recursive structure how to represent annotation values in somehow more friendly than MetaItems.
 // Attr has implements trait fmt::Display in that way that it can generate source code from instance.
-#[derive(Debug)]
+#[derive(Debug,Clone)]
 pub enum Attr {
 	ListAttr(String, Vec<Attr>),
 	NamedAttr(String, Box<Attr>),
@@ -19,19 +19,54 @@ pub enum Attr {
 impl fmt::Display for Attr {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
 		match self {
-			&Attr::StringAttr(ref s) => write!(f, "attrs:Attr::Attr(\"{}\".to_string())", s),
+			&Attr::StringAttr(ref s) => write!(f, "treasure::Attr::StringAttr(\"{}\".to_string())", s),
 			&Attr::NamedAttr(ref n, ref v) => {
-				write!(f, "attrs:Attr::NamedAttr(\"{}\".to_string(), Box::new({}))", n, v)
+				write!(f, "treasure::Attr::NamedAttr(\"{}\".to_string(), Box::new({}))", n, v)
 			}
 			&Attr::ListAttr(ref n, ref v) => {
 				let mut items = vec![];
 				for i in v.iter() {
 					items.push(format!("{}", i))
 				}
-				write!(f, "attrs:Attr::ListAttr(\"{}\".to_string(), vec![{}])", n, items.join(", "))
+				write!(f, "treasure::Attr::ListAttr(\"{}\".to_string(), vec![{}])", n, items.join(", "))
 			}
 		}
     }
+}
+
+impl Attr {
+
+	// returns attr structure from ast::MetaItem_
+	pub fn new_from_meta_item(mi:&ast::MetaItem_) -> Attr {
+		match mi {
+			&ast::MetaList(ref name, ref list) => {
+				let mut reslist:Vec<Attr> = vec![];
+				for item in list.iter() {
+					reslist.push(Attr::new_from_meta_item(&item.node))
+				}
+				Attr::ListAttr(name.to_string(), reslist)
+			},
+			&ast::MetaWord(ref word) => {
+				Attr::StringAttr(word.to_string())
+			},
+			&ast::MetaNameValue(ref name, ref lit) => {
+				match lit.node {
+					ast::LitStr(ref word, _) => Attr::NamedAttr(
+						name.to_string(),
+						Box::new(Attr::StringAttr(word.to_string()))
+					),
+					_ => panic!("MetaNameValue is not string")
+				}
+
+
+			}
+		}
+	}
+
+	pub fn new_from_attribute(a:&ast::Attribute) -> Attr {
+		Attr::new_from_meta_item(&a.node.value.node)
+	}
+
 }
 
 // Errors that can occur at reading from meta attributes and applying for callback closure.
@@ -55,13 +90,13 @@ impl fmt::Display for AttrError {
 /*
 Attributes struct to hold all attributes
  */
-#[derive(Debug)]
+#[derive(Debug,Clone)]
 pub struct Attrs(collections::HashMap<String, Attr>);
 
 /*
 Attrs is a set of all attributes for given column.
  */
-impl Attrs {
+impl <'a> Attrs {
 
 	// Create new instance of Attrs
 	pub fn new() -> Attrs {
@@ -73,17 +108,6 @@ impl Attrs {
 		self.0.insert((*name).clone(), attr);
 		self
 	}
-
-	// read meta item and populate attributes
-	// closure is callback function that can correct these attributes to valid values, or
-	// refuse attribute at all.
-	pub fn read_meta_item<F>(&mut self, _mi:&ast::MetaItem, _closure: F) -> Result<Attrs, AttrError>
-		where F: Fn(String, Result<Attr, AttrError>) -> Result<Attr, AttrError>
-	{
-
-		Err(AttrError::UnknownAttr)
-	}
-
 }
 
 /*
@@ -91,7 +115,13 @@ impl Attrs {
  */
 impl fmt::Display for Attrs {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, "attrs:Attrs")
+
+		let mut lines:Vec<String> = vec!["let mut i = treasure::Attrs::new()".to_string()];
+		for (k, v) in self.0.iter() {
+			lines.push(format!("i.insert(&\"{}\".to_string(), {})", k, v));
+		}
+		lines.push("i".to_string());
+		write!(f, r#"{{ {} }}"#, lines.join(";"))
     }
 }
 

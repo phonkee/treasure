@@ -1,6 +1,4 @@
-#![feature(plugin_registrar, rustc_private, trace_macros)]
-#![feature(convert)]
-#![feature(plugin)]
+#![feature(plugin_registrar, rustc_private, trace_macros, convert, plugin)]
 #![allow(unused_imports)]
 #![allow(dead_code)]
 
@@ -16,9 +14,14 @@ use syntax::parse::token;
 //pub use models::model::Model;
 //pub use models::columns;
 pub use models::expand_model;
-//pub use models::columns::column::*;
+pub use query::*;
+pub use models::model::Model;
+pub use models::options::ModelOptions;
+pub use models::columns::options::ColumnOptions;
+pub use utils::attrs::{Attr,Attrs};
 
 pub mod models;
+pub mod query;
 pub mod utils;
 
 #[plugin_registrar]

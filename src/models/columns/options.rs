@@ -1,3 +1,4 @@
+#[allow(unused_assignments)]
 use std::collections;
 use std::fmt;
 use syntax::ast;
@@ -9,121 +10,94 @@ use super::super::super::utils::attrs;
 #[derive(Debug)]
 pub enum OptionsError{
 	ErrorPrivateField,
+	UnspecifiedError,
 }
 
-/*
-Information about columns
- */
-#[derive(Debug)]
-pub struct Options {
-	pub name: String,
-	pub db_name: String,
-	pub attrs: attrs::Attrs,
-	pub ty: String,
+// returns list of Options from structdef
+pub fn get_columns(sd:&ast::StructDef) -> Result<collections::BTreeMap<String, String>, OptionsError> {
+
+	let ue = OptionsError::UnspecifiedError;
+	let mut result:collections::BTreeMap<String, String> = collections::BTreeMap::new();
+
+	for field in sd.fields.iter() {
+		match generate_column_options(field) {
+			Ok((name, value)) => {
+				result.insert(name, value);
+			},
+			_ => return Err(ue),
+		};
+	};
+
+	Ok(result)
 }
 
-#[derive(Debug)]
-pub struct ColumnOptions(pub collections::HashMap<String, Options>);
 
-impl ColumnOptions {
-	pub fn new() -> ColumnOptions {
-		ColumnOptions(collections::HashMap::new())
+pub fn generate_column_options(sf:&ast::StructField) -> Result<(String, String), OptionsError>{
+
+	let mut name;
+	let mut db_name;
+	let mut ty = "".to_string();
+	let mut attrs = attrs::Attrs::new();
+
+	match sf.node.kind {
+		ast::StructFieldKind::NamedField(ref ident, vis) => {
+			match vis {
+				ast::Visibility::Public => {
+					let iname = String::from(ident.name.as_str());
+					name = iname.clone();
+					db_name = iname.clone();
+
+					// what if it's not path?
+					if let ast::Ty_::TyPath(_, ref path) = sf.node.ty.node {
+						ty = format!("{}", path);
+					}
+				},
+				ast::Visibility::Inherited => return Err(OptionsError::ErrorPrivateField)
+			}
+		},
+		_ => return Err(OptionsError::ErrorPrivateField)
 	}
-}
 
-
-/*
-Options - information about column
- */
-impl Options {
-
-	pub fn new() -> Options {
-		Options {
-			name: "".to_string(),
-			db_name: "".to_string(),
-			ty: "".to_string(),
-			attrs: attrs::Attrs::new(),
-		}
-	}
-
-	// returns new Options from struct field
-	pub fn new_from_struct_field(sf:&ast::StructField) -> Result<Options, OptionsError>{
-		let mut ci = Options::new();
-
-		match sf.node.kind {
-			ast::StructFieldKind::NamedField(ref ident, vis) => {
-				match vis {
-					ast::Visibility::Public => {
-						let iname = String::from(ident.name.as_str());
-						ci.name = iname.clone();
-						ci.db_name = iname.clone();
-
-						// what if it's not path?
-						if let ast::Ty_::TyPath(_, ref path) = sf.node.ty.node {
-							ci.ty = format!("{}", path);
-						}
-
-					},
-					ast::Visibility::Inherited => return Err(OptionsError::ErrorPrivateField)
+	for attr in sf.node.attrs.iter() {
+		match attrs::Attr::new_from_meta_item(&attr.node.value.node) {
+			attrs::Attr::ListAttr(ref name, ref list) => {
+				if name.to_string() != "field".to_string() {
+					continue
+				}
+				// @TODO: call here Column method to validate all attrs
+				for value in list.iter() {
+					match *value {
+						attrs::Attr::ListAttr(ref n, _) | attrs::Attr::NamedAttr(ref n, _) | attrs::Attr::StringAttr(ref n) => {
+							attrs.insert(n, value.clone())
+						},
+					};
 				}
 			},
-			_ => return Err(OptionsError::ErrorPrivateField)
+			_ => ()
 		}
-
-		// set defaults for given field
-		// for this I should create macro that expands type
-//		Column::set_defaults<i32>(&mut ci);
-
-		return Ok(ci)
 	}
 
-	pub fn get_impl(&self) -> String {
-		let implitem = {
-			format!(r#"treasure::models::columns::options::Options{{
-					name: "{0}".to_string(),
-					db_name: "{1}".to_string(),
-					ty: "{2}".to_string(),
-					// @TODO: add generation of attrs!!!
-					attrs: treasure::utils::attrs::Attrs::new(),
-				}}
-		"#, self.name, self.db_name, self.ty)
-        };
-		implitem
-	}
-
-	// returns list of Options from structdef
-	pub fn new_hm_from_struct_def(sd:&ast::StructDef) -> Result<ColumnOptions, OptionsError> {
-
-		let mut fr = ColumnOptions::new();
-
-		for field in sd.fields.iter() {
-			let result = Self::new_from_struct_field(field);
-			match result {
-				Ok(v) => {
-					fr.0.insert(v.name.clone(), v);
-				},
-				Err(e) => println!("this is error {:?}", e),
-			}
-		};
-
-		Ok(fr)
-	}
+	Ok((name.clone(), format!(r#"treasure::ColumnOptions::new("{name}", "{db_name}", "{ty}", {attrs})"#, name=name, db_name=db_name, ty=ty, attrs=attrs)))
 }
 
-impl fmt::Display for Options {
 
-	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-		write!(f, r#"treasure::models::columns::options::Options{{
-						name: "{name}".to_string(),
-						db_name: "{db_name}".to_string(),
-						ty: "{ty}".to_string(),
-						// @TODO: add generation of attrs!!!
-						attrs: treasure::utils::attrs::Attrs::new(),
-					}}
-			"#,
-			name=self.name,
-			db_name=self.db_name,
-			ty=self.ty)
+// ColumnOptions
+// just trait nothing more, implementation will be generated
+#[derive(Clone)]
+pub struct ColumnOptions {
+	pub name:&'static str,
+	pub db_name: &'static str,
+	pub ty: &'static str,
+	pub attrs: attrs::Attrs,
+}
+
+impl ColumnOptions {
+	pub fn new(name:&'static str, db_name:&'static str, ty:&'static str, attrs:attrs::Attrs) -> ColumnOptions {
+		ColumnOptions {
+			name: name,
+			db_name: db_name,
+			ty: ty,
+			attrs: attrs,
+		}
 	}
-
 }
