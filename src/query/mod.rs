@@ -4,15 +4,12 @@ pub mod builder;
 macro_rules! Select {
 	(model : $e:ident) => {
 		{
-			let x = 1;
-//			let mo = $e::model_options_static();
-//			let mut q = $crate::builder::Query::select();
-//			for column in mo.columns.iter() {
-//				q.add_column(column.clone());
-
-//				let column_option = mo.column_options(column);
-
-//			}
+			let mo = $e::model_options_static();
+			let mut q = $crate::builder::Query::select();
+			for column in mo.columns.iter() {
+				q.add_column(column.clone());
+				let column_option = mo.column_options(column);
+			}
 			q
 		}
 	}

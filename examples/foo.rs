@@ -38,5 +38,6 @@ struct User {
 
 fn main() {
 
-
+	let _q = Select!(model:User);
+	println!("this is select {:?}", _q)
 }
