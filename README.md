@@ -141,7 +141,8 @@ can return appropriate value (default?)
 Query
 -----
 
-This part is still in the making, som e small part of select macros is already written, however now they need
+Treasure ORM provides set of macros to make querying of models easier. 
+This part is still in the making, some small part of select macros is already written, however now they need
 to be connected to real QueryBuilder. Treasure will provide two builders:
 QueryBuilder - this builder works upon tables, columns
 ModelQueryBuilder - this builder will be tightly coupled with models and will have method to return QueryBuilder that
@@ -162,9 +163,11 @@ Query macros have their names by sql counterparts.
 Every macro has first argument sort of identification followed by "[" where are all parts of query are specified, ending with "]". 
 select query has 2 possibilities:
 * many:<struct> - this is for selecting multiple objects
+
 ```rust 
 select![many:User[<query_parts>]]
-```        
+```
+
 * one:<struct> - this selects just one object from database. (TODO: exceptions DoesNotExist, MultipleObjectsReturned)
 ```rust 
 select![one:User[<query_parts>]]
@@ -183,6 +186,7 @@ select![many:User[
     ]
     limit[1, 10]
 ]]
+```
 
 In next parts I will try to explain every query_part of queries
 
@@ -284,8 +288,6 @@ select
 
 select macro instantiates select query builder and prepopulates it with model options.
 
-
-
 ```rust
 // selecting data from database
 select!(many:User[
@@ -296,28 +298,6 @@ select!(many:User[
 ]).collect(db)
 ```
 
-
-
-
-Treasure ORM provides set of macros to make querying of models easier. 
-
-
-==Macro syntactic sugar==
-
-There is also possibility, since rust macro system is so powerful, not use postfixes, but directly write this:
-
-```rust
-let users = query::select!(User, query::or!(query::and!(id <= 13, id >= 2), active=true)).collect()
-```
-
-or with variables:
-
-```rust
-let min = 1;
-let max = 100;
-
-let users = query::select!(User, query::or!(query::and!(id <= max, id >= min), active=true)).collect()
-```
 
 Signals
 -------
