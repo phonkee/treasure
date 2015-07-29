@@ -69,9 +69,6 @@ fn main() {
 			["test"]
 			["some"]
 		]
-		filter[
-			["x" => 1]
-		]
 	]);
 
 }

@@ -298,6 +298,36 @@ select!(many:User[
 ]).collect(db)
 ```
 
+update
+------
+
+update macro has two possibilities to call:
+* update!(model_instance[...]) - this updates model instance
+* update!(many:User[...]) - this makes bulk update to database (TODO: not implemented)
+
+examples:
+
+```rust
+// example of update of single model instance
+let _user = User::init_new();
+let _qb = update!(user[
+    columns[
+        ["count_logins"]
+        ["last_logged"]
+    ]
+]);
+```
+
+```rust
+// example of update of single model instance
+// @TODO: implement, find out how to do additions...
+let _qb = update!(many:User[
+    set[
+        ["quote" => "something"]
+    ]
+]);
+```
+
 
 Signals
 -------

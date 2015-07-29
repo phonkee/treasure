@@ -46,39 +46,13 @@ macro_rules! update {
 //			let _model_options = $model::model_options_static();
 			// querybuilder where are you?
 			let _qb = 3;
-			query_parts!(qb, update, $($args)*);
+			query_parts!(qb, update_one, $($args)*);
 			// add map method for model
 
 			_qb
 		}
 	};
 }
-
-//// query_parts are e.g. filter, limit in future also group etc..
-//#[macro_export]
-//macro_rules! query_parts {
-//	// filter querY_part for select query
-//	($query_builder:ident, select, filter [ $($inner:tt)* ] $($rest:tt)*) => {
-//		{
-//			filter!($query_builder, select, $($inner)*);
-//			query_parts!($query_builder, select, $($rest)*);
-//		}
-//	};
-//	// filter query_part for update query
-//	($query_builder:ident, update, filter [ $($inner:tt)* ] $($rest:tt)*) => {
-//		{
-//			filter!($query_builder, update, $($inner)*);
-//			query_parts!($query_builder, select, $($rest)*);
-//		}
-//	};
-//	// filter query_part for update query
-//	($query_builder:ident, update, columns [ $($inner:tt)* ] $($rest:tt)*) => {
-//		{
-//			columns!($query_builder, update, $($inner)*);
-//			query_parts!($query_builder, select, $($rest)*);
-//		}
-//	};
-//}
 
 /*
  expression is and[], or[], or single expression [expr => expr]
@@ -176,14 +150,23 @@ macro_rules! query_parts {
 			// here goes special macro that sets map function
 		}
 	};
-	($query_builder:ident, update, columns [ $($inner:tt)* ] $($rest_columns:tt)* ) => {
+	($query_builder:ident, update_one, columns [ $($inner:tt)* ] $($rest_columns:tt)* ) => {
 		{
-			// @TODO: change from dynamic to static
 			println!("part is here");
 			update_column!($query_builder, $($inner)*);
-//				$part!($query_builder, $($inner)*);
+			query_parts!($query_builder, update_one, $($rest_columns)*);
 			// here goes special macro that sets map function
 		}
 	};
+
+	// last resort (blank, how sad)
+	($query_builder:ident, update_one, ) => {
+	};
+
+	// unknown part
+	($query_builder:ident, update_one, $($rest_columns:tt)*) => {
+		panic!("update one unknown query_part, valid queryL_parts are: [columns]")
+	};
+
 }
 

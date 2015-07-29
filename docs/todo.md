@@ -80,3 +80,4 @@ Query macros
 * rethink if model_options is needed as macro argument or we can use topmost instance
 * rethink if filter is needed as macro argument or we can use top most instance
 * add debug to macros - find out bes solution.
+* update many:Model - how to handle updates that involve column e.g.: column = column + 1;
