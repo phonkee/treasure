@@ -11,23 +11,23 @@ use syntax::ext::base::{SyntaxExtension};
 use syntax::parse::token;
 
 
-//pub use models::model::Model;
-//pub use models::columns;
-pub use models::expand_model;
-pub use query::*;
-pub use models::model::Model;
-pub use models::options::ModelOptions;
-pub use models::columns::options::ColumnOptions;
-pub use utils::attrs::{Attr,Attrs};
-
-pub mod models;
-pub mod query;
-pub mod utils;
-
 #[plugin_registrar]
 pub fn plugin_registrar(reg: &mut Registry) {
     let nm = token::intern("model");
     let ext = SyntaxExtension::MultiDecorator(Box::new(expand_model));
     reg.register_syntax_extension(nm, ext);
+	reg.register_macro("default_attrs", expand_default_attrs);
 }
 
+
+//pub use models::model::Model;
+//pub use models::columns;
+pub use models::columns::options::ColumnOptions;
+pub use models::{expand_model,expand_default_attrs};
+pub use query::*;
+pub use models::model::Model;
+pub use models::options::ModelOptions;
+pub use utils::attrs::{Attr,Attrs};
+pub mod models;
+pub mod query;
+pub mod utils;

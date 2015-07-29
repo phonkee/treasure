@@ -1,4 +1,5 @@
-#[allow(unused_assignments)]
+#![allow(unused_assignments)]
+#![allow(unused_attributes)]
 use std::collections;
 use std::fmt;
 use syntax::ast;
@@ -6,12 +7,38 @@ use syntax::ast;
 use super::column::Column;
 use super::super::super::utils::attrs;
 
+#[macro_use(default_attrs)]
+use super::super::ext::expand_default_attrs;
+
+
+// ColumnOptions
+#[derive(Clone,Debug)]
+pub struct ColumnOptions {
+	pub name:&'static str,
+	pub db_name: &'static str,
+	pub ty: &'static str,
+	pub attrs: attrs::Attrs,
+}
+
+impl ColumnOptions {
+	pub fn new(name:&'static str, db_name:&'static str, ty:&'static str, attrs:attrs::Attrs) -> ColumnOptions {
+		ColumnOptions {
+			name: name,
+			db_name: db_name,
+			ty: ty,
+			attrs: attrs,
+		}
+	}
+}
+
 // errors
 #[derive(Debug)]
 pub enum OptionsError{
 	ErrorPrivateField,
 	UnspecifiedError,
 }
+
+
 
 // returns list of Options from structdef
 pub fn get_columns(sd:&ast::StructDef) -> Result<collections::BTreeMap<String, String>, OptionsError> {
@@ -34,10 +61,9 @@ pub fn get_columns(sd:&ast::StructDef) -> Result<collections::BTreeMap<String, S
 
 pub fn generate_column_options(sf:&ast::StructField) -> Result<(String, String), OptionsError>{
 
-	let mut name;
-	let mut db_name;
+	let name;
+	let db_name;
 	let mut ty = "".to_string();
-	let mut attrs = attrs::Attrs::new();
 
 	match sf.node.kind {
 		ast::StructFieldKind::NamedField(ref ident, vis) => {
@@ -58,14 +84,21 @@ pub fn generate_column_options(sf:&ast::StructField) -> Result<(String, String),
 		_ => return Err(OptionsError::ErrorPrivateField)
 	}
 
+	// @TODO: big one
+	// call to default_attrs with type e.g. default_attrs<i32> - type will be expanded from variable.
+	// after that we should validate all attributes
+	let mut attrs = attrs::Attrs::new();
+	//let mut attrs = default_attrs!(ty);
+
+
 	for attr in sf.node.attrs.iter() {
 		match attrs::Attr::new_from_meta_item(&attr.node.value.node) {
 			attrs::Attr::ListAttr(ref name, ref list) => {
 				if name.to_string() != "field".to_string() {
 					continue
 				}
-				// @TODO: call here Column method to validate all attrs
 				for value in list.iter() {
+					// @TODO: call here Column method to validate all attrs
 					match *value {
 						attrs::Attr::ListAttr(ref n, _) | attrs::Attr::NamedAttr(ref n, _) | attrs::Attr::StringAttr(ref n) => {
 							attrs.insert(n, value.clone())
@@ -81,23 +114,3 @@ pub fn generate_column_options(sf:&ast::StructField) -> Result<(String, String),
 }
 
 
-// ColumnOptions
-// just trait nothing more, implementation will be generated
-#[derive(Clone)]
-pub struct ColumnOptions {
-	pub name:&'static str,
-	pub db_name: &'static str,
-	pub ty: &'static str,
-	pub attrs: attrs::Attrs,
-}
-
-impl ColumnOptions {
-	pub fn new(name:&'static str, db_name:&'static str, ty:&'static str, attrs:attrs::Attrs) -> ColumnOptions {
-		ColumnOptions {
-			name: name,
-			db_name: db_name,
-			ty: ty,
-			attrs: attrs,
-		}
-	}
-}

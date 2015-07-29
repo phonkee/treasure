@@ -111,7 +111,7 @@ impl <'a> Attrs {
 }
 
 /*
-@TODO: Implement fmt::Display trait that will similarly to Attr generate source code representation of data it holds.
+Display trait generates valid source code for Attrs
  */
 impl fmt::Display for Attrs {
 	fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {

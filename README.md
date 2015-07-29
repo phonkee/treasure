@@ -3,7 +3,7 @@ Treasure ORM
 
 **!!!! Treasure ORM is in phase of experimenting !!!**
 
-ORM library for rust (or rather proof of concept, with following heavy development).
+ORM library for rust (or rather proof of concept, with following heavy development) inspired by awesome django framework.
 
 This is still experiment, and I started probably from the other side of ORM that should be started by its development, 
 but I think that ease of definition of models and its columns is the "sale argument" of every ORM.
@@ -141,28 +141,166 @@ can return appropriate value (default?)
 Query
 -----
 
-Under design decisions!!
+This part is still in the making, som e small part of select macros is already written, however now they need
+to be connected to real QueryBuilder. Treasure will provide two builders:
+QueryBuilder - this builder works upon tables, columns
+ModelQueryBuilder - this builder will be tightly coupled with models and will have method to return QueryBuilder that
+                    will be populated from data he gives him.
 
-Dialects: postgres...
+QueryBuilder will also have ability to "map" results to object, probably it will be function that accepts closure with 
+argument rows (in single mode row). This rows will not be direct rows from database engine, but abstraction over them
+because we have also possibility to have "aliases" for columns defined in model (db_name).
 
-maybe something like this? (any ideas?):
+*Query macros:*
 
+Query macros have their names by sql counterparts.
+* select - macro to perform select queries
+* update - macro to perform update queries (single instances or multiple rows)
+* delete - macro to perform delete queries (single instances or multiple rows)
+* insert - macro to insert model instances to database
+
+Every macro has first argument sort of identification followed by "[" where are all parts of query are specified, ending with "]". 
+select query has 2 possibilities:
+* many:<struct> - this is for selecting multiple objects
+```rust 
+select![many:User[<query_parts>]]
+```        
+* one:<struct> - this selects just one object from database. (TODO: exceptions DoesNotExist, MultipleObjectsReturned)
+```rust 
+select![one:User[<query_parts>]]
+```        
+
+The <query_parts> part shown in example is where all modifiers are set. these modifiers are defined following way:
+<name of modifier>[<modifier options>].
+You can see that modifiers are not separated by "," it's from the nature of macros, rather their values are
+surrounded by [] which makes them quite readable. In following example you can see that.
+
+Example:
 ```rust
-let users = query::select!(User, query::and!(id__gt=13, id__lte=100), active=true).collect()
+select![many:User[
+    filter[
+        ["age__lt" => 10]    
+    ]
+    limit[1, 10]
+]]
 
-session::query!(query::select!(User, where!(query::and(id__gt=13, id__lte=100), active=true))
+In next parts I will try to explain every query_part of queries
 
-let user = User::init_new();
-query::insert!(conn, user)
-query::update!(user)
-query::update!(user, "name", "username")
-query::delete!(user)
+filter:
+-------
 
-// @TODO: Raw queries
+Filter applies to following queries: select, update(mass), delete(mass)
+
+In filter you can specify separate clauses such as:
+```rust
+["username" => "phonkee"]
 ```
 
-TODO: how to do pluggable modifiers such as "__gt", "__gte" etc...
-Ideally every modifier should be passed to Column trait method that will return 
+First is name of model column following by => and value. Column name can have field lookups (such as in django)
+Lookups take the form "field__lookuptype" => value. If lookup type is not specified "__eq" is used.
+The plan is to have support for following lookup types;
+* eq - equal
+* lt - lower than
+* lte - lower than or equal
+* gt - greater than
+* gte - greater than or equal
+* contains - query to search in text fields
+* icontains - case insensitive contains
+* in - IN clause in sql
+and probably other...
+
+@TODO: add not[....] modifier.
+
+Filtering supports also AND and OR conditions. They both have this format and [...], or [...].
+You can stack them anyway you want. If you don't provide wingle "and" or "or" as filter, they will be default wrapped in AND clause.
+
+```rust
+select!(many:User[
+    filter[
+        ["name__icontains" => "Peter"]
+        ["age__gte" => 30]
+    ]
+])
+```
+
+will be automatically wrapped to and clause and will equal to this:
+```rust
+select!(many:User[
+    filter[
+        and [
+            ["name__icontains" => "Peter"]
+            ["age__gte" => 30]
+        ]
+    ]
+])
+```
+
+AND and OR clauses can be stacked anyway you want, you can create really complex clauses:
+
+```rust
+select!(many:User[
+    filter[
+        or [
+            ["something__icontains" => "ehm"]            
+        ]
+        and [
+            ["name__icontains" => "Peter"]
+            ["age__gte" => 30]
+        ]
+        ["one__in" => ["one", "two", "three"] 
+    ]
+])
+```
+
+will be equal as:
+```rust
+select!(many:User[
+    filter[
+        and [
+            or [
+                ["something__icontains" => "ehm"]            
+            ]
+            and [
+                ["name__icontains" => "Peter"]
+                ["age__gte" => 30]
+            ]
+            ["one__in" => ["one", "two", "three"] 
+        ]
+    ]
+])
+```
+
+nice example is also [Example](examples/simple.rs#L38-62)
+
+Isn't that pretty?
+I hope you like this query language as I like, more updates will come later, there are a ton of things more to implement,
+and yes I mean a ton just in these querying macros. Like update already instantiated query builder with additional filters, limits...
+
+TODO: 
+define other macros
+
+select
+------
+
+select macro instantiates select query builder and prepopulates it with model options.
+
+
+
+```rust
+// selecting data from database
+select!(many:User[
+    filter[
+        ["username" => "phonkee"]
+        ["age__gte" => 30]
+    ]
+]).collect(db)
+```
+
+
+
+
+Treasure ORM provides set of macros to make querying of models easier. 
+
 
 ==Macro syntactic sugar==
 
@@ -206,16 +344,11 @@ Database connection
 -------------------
 
 Design decision needed!
-Where to store database connection? 
-Store in static object in treasure, or add this to every query::.... operation as parameter?
-
+Write wrapper around results (all dialects can implement).
     
-Author: 
--------
-Peter Vrba (phonkee)
-
 Contributions:
 --------------
 If you want to contribute with ideas and/or code, I will be very happy!
 
-
+Author: Peter Vrba (phonkee)
+License: MIT

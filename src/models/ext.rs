@@ -1,7 +1,8 @@
-use syntax::ext::base::{Annotatable, ExtCtxt};
+use syntax::ext::base::{Annotatable, ExtCtxt, MacResult, DummyResult, MacEager};
 use syntax::ext::quote::rt::{ExtParseUtils};
-use syntax::ast::{MetaItem,MetaList};
+use syntax::ast::{MetaItem,MetaList,TokenTree};
 use syntax::codemap::{Span};
+use rustc::plugin::Registry;
 
 
 use super::options;
@@ -21,7 +22,7 @@ pub fn expand_model(excx: &mut ExtCtxt,
 		Err(e) => excx.span_err(sp, format!(r#"Error {:?}"#, e).as_str()),
 		Ok(impls) => {
 			for mo_impl in impls.iter() {
-				println!("impl {}", mo_impl);
+//				println!("impl {}", mo_impl);
 				let _a = Annotatable::Item(excx.parse_item(mo_impl.clone()));
 				push(_a);
 			}
@@ -36,5 +37,13 @@ Right now it's very rough, still nice concept, which we can make together to gre
 Thank you,
 	(phonkee)
 	");
+}
+
+pub fn expand_default_attrs(cx: &mut ExtCtxt, sp: Span, args: &[TokenTree])
+        -> Box<MacResult + 'static> {
+
+	let parsed = cx.parse_expr("let x = 1;".to_string());
+
+	MacEager::expr(parsed)
 }
 

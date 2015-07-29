@@ -22,7 +22,7 @@ pub enum ModelOptionsError {
 	OptionsError,
 }
 
-
+#[derive(Debug)]
 pub struct ModelOptions {
 	pub name: &'static str,
 	pub db_name: &'static str,
@@ -112,7 +112,7 @@ fn get_column_options(ann:&base::Annotatable) -> Result<(Vec<(String, String)>),
 						result.push((k.clone(), format!(r#"{}"#, v)))
 					}
 				},
-				Err(e) => return nserr,
+				Err(_) => return nserr,
 			};
 		} else {
 			return nserr

@@ -1,4 +1,7 @@
-// THis is very experimental..
+// THis is very unstable, mess..
+// move builder to builder directory.
+// create QueryBuilder and ModelQueryBuilder
+
 use std::collections;
 use super::super::models::options::ModelOptions;
 
@@ -12,7 +15,7 @@ pub enum QueryType {
 
 // Query represents structurea about sql query
 #[derive(Debug)]
-pub struct Query {
+pub struct QueryBuilder {
 	query_type: QueryType,
 	columns: Vec<String>,
 	column_aliases: collections::BTreeMap<String, String>,
@@ -20,10 +23,10 @@ pub struct Query {
 }
 
 // implementation of Query
-impl Query {
+impl QueryBuilder {
 
-	pub fn new(query_type:QueryType) -> Query {
-		Query{
+	pub fn new(query_type:QueryType) -> QueryBuilder {
+		QueryBuilder {
 			query_type: query_type,
 			columns: vec![],
 			column_aliases: collections::BTreeMap::new(),
@@ -31,26 +34,12 @@ impl Query {
 		}
 	}
 
-	pub fn delete() -> Query {
+	pub fn delete() -> QueryBuilder {
 		Self::new(QueryType::DELETE)
 	}
 
-	pub fn select() -> Query {
+	pub fn select() -> QueryBuilder {
 		Self::new(QueryType::SELECT)
 	}
-
-//	pub fn from_model_options(&mut self, mo:ModelOptions) {
-//		for column in mo.columns {
-//			self.add_column(column);
-//		}
-//	}
-//
-//	pub fn add_column(&mut self, column:String) {
-//		self.columns.push(column);
-//	}
-//
-//	pub fn add_column_alias(&mut self, alias:String, column:String) {
-//		self.column_aliases.insert(alias, column);
-//	}
 
 }
