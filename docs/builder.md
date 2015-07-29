@@ -60,21 +60,44 @@ let qb = select!(many:BlogPost[
 ]);
 
 // additional filtering you can reuse already written macros
-let query = select!(many:BlogPost, filter!(or("author__pk" <= 22, "author__pk" >= 10)))
+let query = select!(many:BlogPost[
+    filter[
+        or[ 
+            ["author__pk" => 22] 
+            ["author__pk" >= 10]
+        ]
+    ]
+]);
 let qb  = filter!(qb, 
     and[
         ["pk" => 2]
     ]
 );
 
-
 // updating either model instance or bulk update
-let qb = update!(blog, "name", "username");
-let qb = update!(model:BlogPost, set("name" = "hello"), filter("something" isnull));
+let qb = update!(blog[
+    columns[
+        ["name"]
+        ["username"]
+    ]
+]);
+
+let qb = update!(model:BlogPost[ 
+    set[
+        ["name" = "hello"]
+    ]
+    filter[
+        ["something" = null]
+    ]
+]);
 
 // delete either model instance or bulk deletion
 let qb = delete!(blog);
-let qb = delete!(model:BlogPost[filter["rating" <= 10]]);
+let qb = delete!(model:BlogPost[
+    filter[
+        ["rating__gt" => 10]
+    ]
+]);
 
 // inserting new instance
 let qb = insert!(blog);

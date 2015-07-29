@@ -61,5 +61,18 @@ fn main() {
 		]
 		limit[1]
 	]);
+
+	// example of update query
+	let _user = User::init_new();
+	let _qb = update!(user[
+		columns[
+			["test"]
+			["some"]
+		]
+		filter[
+			["x" => 1]
+		]
+	]);
+
 }
 
