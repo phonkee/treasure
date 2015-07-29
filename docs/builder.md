@@ -77,8 +77,8 @@ let qb  = filter!(qb,
 // updating either model instance or bulk update
 let qb = update!(blog[
     columns[
-        ["name"]
-        ["username"]
+        "name",
+        "username"
     ]
 ]);
 

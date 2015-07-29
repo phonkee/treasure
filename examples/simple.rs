@@ -66,8 +66,8 @@ fn main() {
 	let _user = User::init_new();
 	let _qb = update!(user[
 		columns[
-			["test"]
-			["some"]
+			"test",
+			"some"
 		]
 	]);
 

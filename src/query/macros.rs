@@ -124,10 +124,9 @@ macro_rules! limit {
 
 
 #[macro_export]
-macro_rules! update_column {
-	($query_builder:ident, [ $column:expr ] $($rest_update_column:tt)* ) => {
+macro_rules! update_columns {
+	($query_builder:ident, $column:expr ) => {
 		// one of the columns in the update:model[columns[["this"]]
-		update_column!($query_builder, $($rest_update_column)*);
 	};
 	($query_builder:ident, ) => {
 		// end of column
@@ -150,11 +149,10 @@ macro_rules! query_parts {
 			// here goes special macro that sets map function
 		}
 	};
-	($query_builder:ident, update_one, columns [ $($inner:tt)* ] $($rest_columns:tt)* ) => {
+	($query_builder:ident, update_one, columns $($columns:tt)* ) => {
 		{
 			println!("part is here");
-			update_column!($query_builder, $($inner)*);
-			query_parts!($query_builder, update_one, $($rest_columns)*);
+			update_columns!($query_builder, $($columns)*);
 			// here goes special macro that sets map function
 		}
 	};

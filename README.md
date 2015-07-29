@@ -312,8 +312,8 @@ examples:
 let _user = User::init_new();
 let _qb = update!(user[
     columns[
-        ["count_logins"]
-        ["last_logged"]
+        "count_logins",
+        "last_logged"
     ]
 ]);
 ```
