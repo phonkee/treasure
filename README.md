@@ -70,7 +70,7 @@ which is constructor method to create new model instance.
 
 Right now you can try and see what currently Treasure orm does by runnin:
 ```bash
-    cargo run --example foo --verbose
+    cargo run --example simple --verbose
 ```
 
 For debugging/implementation purposes Treasure dumps generated implementations to stdout.
