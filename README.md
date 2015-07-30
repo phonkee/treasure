@@ -194,16 +194,32 @@ In filter you can specify separate clauses such as:
 ```
 
 First is name of model column following by => and value. Column name can have field lookups (such as in django)
-Lookups take the form ```["field__lookuptype" => value]```. If lookup type is not specified "__eq" is used.
+Lookups take the form ```["field__lookuptype" => value]```. If lookup type is not specified "__exact" is used.
 The plan is to have support for following lookup types;
-* eq - equal
-* lt - lower than
-* lte - lower than or equal
-* gt - greater than
-* gte - greater than or equal
-* contains - query to search in text fields
-* icontains - case insensitive contains
-* in - IN clause in sql
+* exact
+* iexact
+* contains
+* icontains
+* in
+* gt
+* gte
+* lt
+* lte
+* startswith
+* istartswith
+* endswith
+* iendswith
+* range
+* year
+* month
+* day
+* week_day
+* isnull
+* search
+* regex
+* iregex
+
+
 and probably other...
 
 @TODO: add not[....] modifier.

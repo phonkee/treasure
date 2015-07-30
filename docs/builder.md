@@ -54,7 +54,7 @@ let qb = select!(one:User[
 // filter expressions will know how to span relationships (when ForeignKey will be implemented
 let qb = select!(many:BlogPost[
     filter[
-        ["author__name__eq" => ["Peter", "Vrba"]]
+        ["author__name__exact" => ["Peter", "Vrba"]]
     ]
     limit[1, 10]
 ]);
