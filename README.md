@@ -53,14 +53,7 @@ Treasure will generate Model trait impl methods such as:
 ```rust
 fn model_options(&self) -> ModelOptions;
 ```
-which returns inspect information about model
-
-```rust
-fn column_options(column:String) -> Option<options::Options>;
-```
-this method returns options::Options about given field
-TODO: isn't it possible to store these data in static variable, so it will not be recreated before each call
-to column_options?
+which returns inspect information about model (store as static? in the future for speed improvements)
 
 ```rust
 fn init_new() -> Self;
