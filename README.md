@@ -91,7 +91,7 @@ For now model has following possible annotations
 * managed - whether Treasure should handle creation of model in db (in future)
 Main goal is to write exhaustive compiler errors in case of error. We must have a lot of validations! We can do more!
 
-Decision needed: add annotation inline_options that inlines options() method
+Decision needed: add annotation inline_options that inlines model_options() method
 
 
 Column attrs
@@ -135,7 +135,7 @@ Query
 -----
 
 Treasure ORM provides set of macros to make querying of models easier. 
-This part is still in the making, some small part of select macros is already written, however now they need
+This part is still in the making, some small part of select macros are already written, however now they need
 to be connected to real QueryBuilder. Treasure will provide two builders:
 QueryBuilder - this builder works upon tables, columns
 ModelQueryBuilder - this builder will be tightly coupled with models and will have method to return QueryBuilder that
