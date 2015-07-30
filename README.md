@@ -194,7 +194,7 @@ In filter you can specify separate clauses such as:
 ```
 
 First is name of model column following by => and value. Column name can have field lookups (such as in django)
-Lookups take the form ```rust ["field__lookuptype" => value]```. If lookup type is not specified "__eq" is used.
+Lookups take the form ```["field__lookuptype" => value]```. If lookup type is not specified "__eq" is used.
 The plan is to have support for following lookup types;
 * eq - equal
 * lt - lower than
