@@ -225,7 +225,8 @@ and probably other...
 @TODO: add not[....] modifier.
 
 Filtering supports also AND and OR conditions. They both have this format and [...], or [...].
-You can stack them anyway you want. If you don't provide wingle "and" or "or" as filter, they will be default wrapped in AND clause.
+You can stack them anyway you want. If you don't provide single "and" or "or" in filter, 
+they will be default wrapped in AND clause.
 
 ```rust
 select!(many:User[
@@ -248,7 +249,7 @@ select!(many:User[
 ])
 ```
 
-AND and OR clauses can be stacked anyway you want, you can create really complex clauses:
+AND and OR clauses can be stacked, so you can create really complex clauses:
 
 ```rust
 select!(many:User[
