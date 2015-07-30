@@ -139,7 +139,7 @@ This part is still in the making, some small part of select macros are already w
 to be connected to real QueryBuilder. Treasure will provide two builders:
 QueryBuilder - this builder works upon tables, columns
 ModelQueryBuilder - this builder will be tightly coupled with models and will have method to return QueryBuilder that
-                    will be populated from data he gives him.
+                    will be populated from data from given model.
 
 QueryBuilder will also have ability to "map" results to object, probably it will be function that accepts closure with 
 argument rows (in single mode row). This rows will not be direct rows from database engine, but abstraction over them
