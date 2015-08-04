@@ -9,7 +9,7 @@
 extern crate treasure;
 
 use treasure::models::model::Model;
-
+use treasure::query::builder::{and,or,c,select,Operator,q};
 
 #[model(db_name="custom_user",primary_key="id",unique(email,test),unique(some,other))]
 struct User {
@@ -71,5 +71,31 @@ fn main() {
 		]
 	]);
 
-}
+	// @TODO: make select, update, delte, insert chainable so it will be possible to do: select().from("my")
+	let mut _qb2 = select();
+	_qb2
+		.from("my")
+		.column("this")
+		.column(c("this"))
+		.filter(
+			and(
+				!and(
+					q("this", Operator::EQ, "something".to_string())
+				).and(
+					or(
+						q("this", Operator::EQ, "something".to_string())
+					).or(
+						q("this", Operator::EQ, "something".to_string())
+					)
+				).and(
+					!q("this", Operator::EQ, "something".to_string())
+				)
+			)
+		)
+		.filter_add(
+			q("this", Operator::EQ, "something".to_string())
+		)
+	;
 
+	println!("Builder: {:?}", _qb2)
+}

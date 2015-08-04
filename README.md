@@ -136,12 +136,12 @@ Query
 
 Treasure ORM provides set of macros to make querying of models easier. 
 This part is still in the making, some small part of select macros are already written, however now they need
-to be connected to real QueryBuilder. Treasure will provide two builders:
-QueryBuilder - this builder works upon tables, columns
-ModelQueryBuilder - this builder will be tightly coupled with models and will have method to return QueryBuilder that
+to be connected to real Builder. Treasure will provide two builders:
+Builder - this builder works upon tables, columns
+ModelBuilder - this builder will be tightly coupled with models and will have method to return Builder that
                     will be populated from data from given model.
 
-QueryBuilder will also have ability to "map" results to object, probably it will be function that accepts closure with 
+Builder will also have ability to "map" results to object, probably it will be function that accepts closure with 
 argument rows (in single mode row). This rows will not be direct rows from database engine, but abstraction over them
 because we have also possibility to have "aliases" for columns defined in model (db_name).
 

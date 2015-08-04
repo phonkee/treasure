@@ -23,7 +23,7 @@ pub fn plugin_registrar(reg: &mut Registry) {
 //pub use models::model::Model;
 //pub use models::columns;
 pub use models::columns::options::ColumnOptions;
-pub use models::{expand_model,expand_default_attrs};
+pub use models::{expand_model,expand_default_attrs,get_model_options};
 pub use query::*;
 pub use models::model::Model;
 pub use models::options::ModelOptions;

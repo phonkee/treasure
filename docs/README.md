@@ -4,8 +4,8 @@ Treasure ORM - implementation details
 Thoughts, implementation details, todo experimental thoughts, list can be found here.
 Plan is over the time to write extensive documentation here.
 
-Information about querybuilder
-[QueryBuilder](builder.md)
+Information about Builder
+[Builder](builder.md)
 
 Model relations (future music)
 [Model relations](relations.md)

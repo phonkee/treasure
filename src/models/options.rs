@@ -9,6 +9,7 @@ use super::super::utils::string;
 //use super::super::utils::attrs::{Attrs,AttrError};
 use super::columns::options;
 
+use ::models::model::Model;
 
 /*
 ModelOptionsError
@@ -29,6 +30,11 @@ pub struct ModelOptions {
 	pub primary_key: &'static str,
 	pub columns: Vec<&'static str>,
 	pub column_options: collections::BTreeMap<&'static str, options::ColumnOptions>,
+}
+
+// Returns model options for given type
+pub fn get_model_options<T: Model>() -> ModelOptions {
+	T::model_options_static()
 }
 
 // generates model options implementing ModelOptions trait

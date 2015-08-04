@@ -1,7 +1,7 @@
 Query language
 --------------
 
-Main component for query-ing is QueryBuilder. QueryBuilder must support all types of queries and also 
+Main component for query-ing is Builder. Builder must support all types of queries and also 
 other things.
 
 Aside of builder treasure will have implemented set of macros that will make querying a breeze.
@@ -64,7 +64,7 @@ let query = select!(many:BlogPost[
     filter[
         or[ 
             ["author__pk" => 22] 
-            ["author__pk" >= 10]
+            ["author__pk" => 10]
         ]
     ]
 ]);
@@ -87,7 +87,7 @@ let qb = update!(model:BlogPost[
         ["name" = "hello"]
     ]
     filter[
-        ["something" = null]
+        ["something__isnull" => true]
     ]
 ]);
 
@@ -102,4 +102,121 @@ let qb = delete!(model:BlogPost[
 // inserting new instance
 let qb = insert!(blog);
 
+```
+
+
+Builder
+============
+
+struct that will hold any type of sql query witch all informations.
+Currently we will support just simple queries (no subqueries), although in the future we can think about that
+
+
+**Warning**
+
+This api is in its beginning phase and can be still subject to change. Please accept this as early proposal.
+
+Example api calls to query buidler:
+
+```rust
+// select query buidler
+builder::select()
+	.columns(["t1.some", "t1.other"])
+	.column("t1.column1")
+	.column("t1.column2")
+	.table("table")
+	.filter(
+		or(
+			not(
+				and(
+					-q("some", in, ["asdf", "asdf"])
+				).and(
+					q("other", eq, "aaa")
+				)
+			)
+		).or(
+			-and(
+                -q(c("something"), eq, "asdf")
+			).and(
+				q("other", contains, "eq")
+			)
+		)
+	)
+	.left_join(
+		table("table").alias("t2"),
+		"t1.id",
+		"t2.id"
+	)
+	.right_join(
+		table("table").alias("t3"),
+		"t2.id",
+		"t3.id"
+	)
+	.limit(10)
+	.offset(10)
+	.suffix("something")
+	
+
+// update query builder
+builder::update()
+	.table("table")
+	.alias("t1")
+	.set("column", "something")
+	.set(
+	    c("column2"), 
+	    func("wohooo")
+	        .arg(
+	            col("other")
+	        ).arg(
+	            col("some")
+	        )
+	.set(c("column3"), "tramtarara")
+	.set(c("column4"), "bumtsss!")
+	.filter(
+		or(
+            !and(
+                q(c("t1.some"), in, ["asdf", "asdf"])
+            ).and(
+                !q(c("other"), eq, "aaa")
+            )
+		).or(
+		    -and(
+				not(
+					q(c("something"), eq, "asdf")
+				)
+			).and(
+				-q(c("other"), contains, "eq")
+			)
+		)
+	)
+	.join(t("table").alias("t2"), c("t1.id"), c("t2.something"))
+	.limit(10)
+	.offset(10)
+
+// delete query builder
+builder::delete()
+	.table("table")
+	.filter(
+		or(
+            !and(
+                q("some", in, ["asdf", "asdf"])
+            ).and(
+                q("other", eq, "aaa")
+            )
+		).or(
+			and(
+                !q("something", eq, "asdf")
+			).and(
+				q("other", contains, "eq")
+			)
+		)
+	)
+	.limit(10)
+
+// insert query builder
+builder::insert()
+	.table("table")
+	.value("asdf", "asdf")
+	.value("asdf", "asdf")
+	.suffix("some")
 ```

@@ -5,7 +5,7 @@ Please see readme.md there is more info.
 
 @TODO: better error reporting, at least for blank arguments where is at least one required.
 @TODO: better documentation
-@TODO: attach to querybuilder (not yet implemented)
+@TODO: attach to Builder (not yet implemented)
  */
 
 /*
@@ -17,8 +17,8 @@ select!(one:<model>[...]) - selects one object from database
 macro_rules! select {
 	( many : $model:ident [ $($args:tt)* ]) => {
 		{
-			let _model_options = $model::model_options_static();
-			// querybuilder where are you?
+			let _model_options = treasure::get_model_options::<$model>();
+			// Builder where are you?
 			let _qb = 1;
 			query_parts!(qb, select, $($args)*);
 			// add map method for model
@@ -28,8 +28,8 @@ macro_rules! select {
 	};
 	( one : $model:ident [ $($args:tt)* ]) => {
 		{
-			let _model_options = $model::model_options_static();
-			// querybuilder where are you?
+			let _model_options = treasure::get_model_options::<$model>();
+			// Builder where are you?
 			let _qb = 2;
 			query_parts!(qb, select, $($args)*);
 
@@ -44,7 +44,7 @@ macro_rules! update {
 	( $model_instance:ident [ $($args:tt)* ]) => {
 		{
 //			let _model_options = $model::model_options_static();
-			// querybuilder where are you?
+			// Builder where are you?
 			let _qb = 3;
 			query_parts!(qb, update_one, $($args)*);
 			// add map method for model
@@ -67,7 +67,7 @@ macro_rules! expr {
 
 	($query_builder:ident, or [ $($inner:tt)* ] $($rest_or:tt)* ) => {
 		// we got and here
-		// @TODO: insert querybuilder here
+		// @TODO: insert Builder here
 		expr!($query_builder, $($inner)*);
 		expr!($query_builder, $($rest_or)*);
 	};
@@ -118,7 +118,7 @@ macro_rules! limit {
 	};
 	// limit with offset
 	($query_builder:ident, $limit:expr, $offset:expr) => {
-		// set limit to querybuilder
+		// set limit to Builder
 	};
 }
 
@@ -151,7 +151,6 @@ macro_rules! query_parts {
 	};
 	($query_builder:ident, update_one, columns $($columns:tt)* ) => {
 		{
-			println!("part is here");
 			update_columns!($query_builder, $($columns)*);
 			// here goes special macro that sets map function
 		}

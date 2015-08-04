@@ -16,10 +16,9 @@ Signals
 * think about possibilities - maybe annotation post_save="post_save" should be enough
     but to have in mind that implementation must precede model struct
 
-
 Columns
 -------
-* default attributes
+* default column_info
 * validate attributes (on first run, namely when column_options are created)
 * to_sql - related tightly to dialects
 * from_sql - tightly related to dialects
@@ -60,7 +59,7 @@ Dialects
 * Think about architecture of dialects (related to columns)
 * Provide single abstraction
 
-QueryBuilder
+Builder
 ------------
 * well all of it...
 * closure (call it map maybe) - to provide mapping function that can fetch data from
