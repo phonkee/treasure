@@ -1,5 +1,5 @@
 use std::str::FromStr;
-
+use ::models::columns::column::Column;
 // QueryColumn
 #[derive(Debug,Clone)]
 pub struct QueryColumn {
@@ -40,4 +40,11 @@ impl From<String> for QueryColumn {
     fn from(s: String) -> QueryColumn {
         QueryColumn::new(s.clone())
     }
+}
+
+// Value - right value for Expr
+// @TODO: implement Func which will have api Func("CONCAT").arg(c("this"))
+// @TODO: implement c("some") + c("other") + 1  ????
+pub enum ColumnValue {
+	Column(Column),
 }

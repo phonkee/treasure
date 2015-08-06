@@ -11,6 +11,9 @@ extern crate treasure;
 use treasure::models::model::Model;
 use treasure::query::builder::{and,or,c,select,Operator,q};
 
+use treasure::query::model;
+
+
 #[model(db_name="custom_user",primary_key="id",unique(email,test),unique(some,other))]
 struct User {
 
@@ -97,5 +100,8 @@ fn main() {
 		)
 	;
 
-	println!("Builder: {:?}", _qb2)
+//	println!("Builder: {:?}", _qb2);
+
+	let _mb = model::select::<User>().filter();
+	println!("\n\n\nModelBuilder: {:?}", _mb.as_builder());
 }

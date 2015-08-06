@@ -19,6 +19,9 @@ pub fn plugin_registrar(reg: &mut Registry) {
 	reg.register_macro("default_attrs", expand_default_attrs);
 }
 
+pub mod db;
+
+pub use db::row::Row;
 
 //pub use models::model::Model;
 //pub use models::columns;

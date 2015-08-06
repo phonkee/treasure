@@ -1,5 +1,5 @@
 use std::ops::Not;
-use super::column::QueryColumn;
+use ::query::column::QueryColumn;
 use ::models::columns::Column;
 
 // Create new And expr
@@ -16,7 +16,6 @@ pub fn or(qf:Filter) -> Filter {
 pub fn q<T:Into<QueryColumn>>(column:T, op:Operator, value:String) -> Filter {
 	Filter::Expr(column.into(), op, value)
 }
-
 
 #[derive(Debug,Clone)]
 pub enum Operator {
@@ -116,9 +115,3 @@ impl Not for Filter {
     }
 }
 
-// Value - right value for Expr
-// @TODO: implement Func which will have api Func("CONCAT").arg(c("this"))
-// @TODO: implement c("some") + c("other") + 1  ????
-pub enum Value {
-	Column(Column),
-}

@@ -106,7 +106,7 @@ let qb = insert!(blog);
 
 
 Builder
-============
+=======
 
 struct that will hold any type of sql query witch all informations.
 Currently we will support just simple queries (no subqueries), although in the future we can think about that
@@ -115,6 +115,7 @@ Currently we will support just simple queries (no subqueries), although in the f
 **Warning**
 
 This api is in its beginning phase and can be still subject to change. Please accept this as early proposal.
+Some parts are still not implemented!
 
 Example api calls to query buidler:
 

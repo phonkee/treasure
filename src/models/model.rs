@@ -4,6 +4,8 @@ Modal trait that all models should satisfy. For now all methods for Model trait 
 use super::options::ModelOptions;
 use super::columns::options;
 
+use ::db::row::Row;
+
 
 // Model trait
 pub trait Model {
@@ -20,4 +22,5 @@ pub trait Model {
 
 	// init function to create new model instance.
 	fn init_new() -> Self;
+	fn from_row(row:&Row, ns:String) -> Self;
 }

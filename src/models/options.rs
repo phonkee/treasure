@@ -91,6 +91,12 @@ pub fn generate_model_options_impls(ann:&base::Annotatable) -> Result<Vec<String
 							let model_options = Self::model_options_static();
 							{name} {{{column_inits}}}
 						}}
+
+						// Returns instance from database row
+						// ns - is namespace, it can be either tablename or alias
+						fn from_row(_row:&treasure::Row, _ns:String) -> Self {{
+							Self::init_new()
+						}}
 					}}
 					"#, name=name, db_name=db_name, primary_key=primary_key,
 						columns=columns.join(", "),

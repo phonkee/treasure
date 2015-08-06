@@ -10,13 +10,11 @@
 ///
 /// **WARNING!!**
 /// This module is under development and its api may be subject to change.
-mod column;
-mod filter;
-mod table;
+pub mod filter;
 
 pub use self::filter::{Filter,and,or,Operator,q};
-pub use self::column::{QueryColumn,c};
-pub use self::table::{QueryTable};
+pub use ::query::column::{QueryColumn,c};
+pub use ::query::table::{QueryTable};
 
 #[derive(Debug,PartialEq)]
 pub enum QueryType {
@@ -90,13 +88,14 @@ impl Builder {
 		self
 	}
 
+	/// Multiple aliases to set table.
 	/// "table" sets table
 	pub fn table<T: Into<QueryTable>>(&mut self, table:T) -> &mut Self {
 		self.query_table = table.into();
 		self
 	}
 
-	/// "table" sets table
+	/// "from" sets table for select querytype
 	pub fn from<T: Into<QueryTable>>(&mut self, table:T) -> &mut Self {
 		debug_assert_eq!(self.query_type, QueryType::Select);
 		self.query_table = table.into();
