@@ -78,7 +78,7 @@ impl Filter {
 				Filter::And(newvec)
 			},
 			&Filter::None => Filter::And(vec![]),
-			other => Filter::And(vec![other.clone()])
+			other => Filter::And(vec![other.clone(), _f])
 		}
 	}
 
@@ -91,7 +91,7 @@ impl Filter {
 				Filter::Or(newvec)
 			},
 			&Filter::None => Filter::Or(vec![]),
-			other => Filter::Or(vec![other.clone()])
+			other => Filter::Or(vec![other.clone(), _f])
 		}
 	}
 

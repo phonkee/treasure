@@ -84,7 +84,7 @@ fn main() {
 			(
 				q("this", Operator::EQ, "something".to_string())
 				|
-				q("this", Operator::EQ, "something".to_string())
+				q("that", Operator::EQ, "other".to_string())
 			) & (
 				q("this", Operator::EQ, "something".to_string())
 				|
@@ -93,7 +93,7 @@ fn main() {
 		)
 	;
 
-//	println!("Builder: {:?}", _qb2);
+	println!("\n\n\nBuilder: {:?}", _qb2);
 
 	let _mb = model::select::<User>().filter();
 	println!("\n\n\nModelBuilder: {:?}", _mb.as_builder());
