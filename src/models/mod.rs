@@ -1,5 +1,4 @@
 #![allow(unused_variables,unused_attributes,unused_assignments)]
-pub mod meta_item;
 pub mod columns;
 pub mod ext;
 pub mod model;

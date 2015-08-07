@@ -2,6 +2,9 @@
 Dialect trait
 All sql dialects must implement this trait
  */
+
+pub mod postgres;
+
 pub trait Dialect {
 
 	// transactions handling

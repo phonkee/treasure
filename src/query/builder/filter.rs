@@ -1,4 +1,4 @@
-use std::ops::Not;
+use std::ops::{Not,BitAnd,BitOr};
 use ::query::column::QueryColumn;
 use ::models::columns::Column;
 
@@ -115,3 +115,20 @@ impl Not for Filter {
     }
 }
 
+// Implement & for complicated AND clauses
+impl BitAnd for Filter {
+    type Output = Filter;
+
+    fn bitand(self, _rhs: Filter) -> Filter {
+		self.and(_rhs)
+    }
+}
+
+// Implement | for complicated OR clauses
+impl BitOr for Filter {
+    type Output = Filter;
+
+    fn bitor(self, _rhs: Filter) -> Filter {
+		self.or(_rhs)
+    }
+}

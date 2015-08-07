@@ -9,7 +9,7 @@
 extern crate treasure;
 
 use treasure::models::model::Model;
-use treasure::query::builder::{and,or,c,select,Operator,q};
+use treasure::query::builder::{c,select,Operator,q};
 
 use treasure::query::model;
 
@@ -81,22 +81,15 @@ fn main() {
 		.column("this")
 		.column(c("this"))
 		.filter(
-			and(
-				!and(
-					q("this", Operator::EQ, "something".to_string())
-				).and(
-					or(
-						q("this", Operator::EQ, "something".to_string())
-					).or(
-						q("this", Operator::EQ, "something".to_string())
-					)
-				).and(
-					!q("this", Operator::EQ, "something".to_string())
-				)
+			(
+				q("this", Operator::EQ, "something".to_string())
+				|
+				q("this", Operator::EQ, "something".to_string())
+			) & (
+				q("this", Operator::EQ, "something".to_string())
+				|
+				!q("this", Operator::EQ, "something".to_string())
 			)
-		)
-		.filter_add(
-			q("this", Operator::EQ, "something".to_string())
 		)
 	;
 

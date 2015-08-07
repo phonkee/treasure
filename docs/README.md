@@ -4,6 +4,9 @@ Treasure ORM - implementation details
 Thoughts, implementation details, todo experimental thoughts, list can be found here.
 Plan is over the time to write extensive documentation here.
 
+Information about high level querying language implemented with macros
+[Query language](query_macros.md)
+
 Information about Builder
 [Builder](builder.md)
 

@@ -6,7 +6,6 @@ use super::columns::options;
 
 use ::db::row::Row;
 
-
 // Model trait
 pub trait Model {
 
@@ -22,5 +21,22 @@ pub trait Model {
 
 	// init function to create new model instance.
 	fn init_new() -> Self;
+
+	// returns new instance from row, ns is either table name or table alias
 	fn from_row(row:&Row, ns:String) -> Self;
+
+	/*
+	Idea
+
+	let user = User::init_new();
+	user.insert(dialect);
+	user.update(dialect);
+	user.delete(dialect);
+
+	Model::select().filter(q("name", Op::EQ, "this")).limit(10).offset(100).collect(dialect)
+
+	Model::update().filter().set("this", "that").collect(dialect)
+	Model::delete().filter().collect(dialect)
+	*/
+
 }
