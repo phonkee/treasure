@@ -4,6 +4,8 @@ Builder
 struct that will hold any type of sql query witch all informations.
 Currently we will support just simple queries (no subqueries), although in the future we can think about that
 
+@TODO:
+add return values in addition with autoincrement field (varies from dialect to dialec).
 
 **Warning**
 
@@ -107,5 +109,5 @@ builder::insert()
 	.table("table")
 	.value("asdf", "asdf")
 	.value("asdf", "asdf")
-	.suffix("some")
+	.auto_increment_field("id")
 ```
