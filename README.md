@@ -1,6 +1,10 @@
 Treasure ORM
 ============
 
+** This project is replaced with [Buildix](https://github.com/phonkee/buildix-rs) - query builder for sqlx **
+
+
+
 **!!!! Treasure ORM is in phase of experimenting !!!**
 
 ORM library for rust (or rather proof of concept, with following heavy development) inspired by awesome django framework.
